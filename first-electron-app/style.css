@@ -1,0 +1,54 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+th:hover {
+  background-color: #e0e0e0;
+}
+
+.fruit-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+.status-indicator {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.status-indicator.connected {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-indicator.disconnected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
