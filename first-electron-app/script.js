@@ -1,62 +1,47 @@
 let fruits = [];
 let sortAsc = true;
 let currentSortColumn = null;
-let ws;
 
-const connectWebSocket = () => {
-    ws = new WebSocket('ws://localhost:8080');
-
-    ws.onopen = () => {
-        console.log('WebSocket connected');
-        updateConnectionStatus('Connected', true);
+// Initialize WebSocket handlers
+window.fruitsAPI.onWebSocketStatus((status) => {
+    const statusElement = document.getElementById('connection-status');
+    statusElement.textContent = status.connected ? 'Connected' : 'Disconnected';
+    statusElement.className = `status-indicator ${status.connected ? 'Connected' : 'Disconnected'}`;
+    if (status.error) {
+        statusElement.textContent += ` (Error: ${status.error})`;
     }
+});
 
-    ws.onclose = () => {
-        console.log('WebSocket disconnected');
-        updateConnectionStatus('Disconnected', false);
-        // Attempt to reconnect after 5 seconds
-        setTimeout(connectWebSocket, 5000);
-    }
-
-    ws.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        if (message.type === 'update') {
-            fruits = message.data;
-            if (currentSortColumn) {
-                sortTable(currentSortColumn, false);
-            } else {
-                displayFruits(fruits);
-            }
+window.fruitsAPI.onWebSocketMessage((data) => {
+    if (data.type === 'update') {
+        fruits = data.data;
+        if (currentSortColumn) {
+            sortTable(currentSortColumn, false);
+        } else {
+            displayFruits(fruits);
         }
     }
-
-    ws.onerror = (error) => {
-        console.error('WebSocket error: ', error);
-        updateConnectionStatus('Error', false);
-    };
-}
-
-const updateConnectionStatus = (status, isConnected) => {
-    const statusElement = document.getElementById('connection-status');
-    statusElement.textContent = `Status: ${status}`;
-    statusElement.className = `status-indicator ${isConnected ? 'connected' : 'disconnected'}`;
-}
+});
 
 const fetchFruits = async () => {
     try {
-        const response = await fetch('http://localhost:3001/fruits');
-        fruits = await response.json();
-        displayFruits(fruits);
-    } catch (e) {
-        console.log(e);
+        const result = await window.fruitsAPI.getFruits();
+        if (result.success) {
+            fruits = result.data;
+            displayFruits(fruits);
+        } else {
+            console.error('Error fetching fruits: ', result.error);
+        }
+    } catch (error) {
+        console.error('Error: ', error);
     }
 }
 
-const displayFruits = (fetchedFruits) => {
+const displayFruits = (fruitsToDisplay) => {
     const fruitList = document.getElementById('fruitList');
     fruitList.innerHTML = '';
 
-    fetchedFruits.forEach(fruit => {
+    fruitsToDisplay.forEach(fruit => {
         const row = document.createElement('tr');
         row.innerHTML = `
                     <td><img src="${fruit.image}" alt="${fruit.name}" class="fruit-image"></td>
@@ -64,7 +49,7 @@ const displayFruits = (fetchedFruits) => {
                     <td>$${fruit.price}</td>
                 `;
         fruitList.appendChild(row);
-    })
+    });
 }
 
 const sortTable = (column, toggleSort = true) => {
@@ -87,6 +72,5 @@ const sortTable = (column, toggleSort = true) => {
     displayFruits(fruits);
 }
 
+// Initial load
 fetchFruits();
-
-connectWebSocket();

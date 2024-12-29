@@ -1,10 +1,11 @@
-// const { contextBridge } = require("electron");
+const { contextBridge, ipcRenderer } = require("electron");
 
-// contextBridge.exposeInMainWorld('fruitsApi', {
-//     fetchFruits: async () => {
-//         const response = await fetch('http://localhost:3001/fruits');
-//         const res = await response.json();
-//         console.log(res);
-//         return res
-//     },
-// });
+contextBridge.exposeInMainWorld('fruitsAPI', {
+    getFruits: () => ipcRenderer.invoke('get:fruits'),
+    onWebSocketStatus: (cb) => {
+        ipcRenderer.on('ws:status', (event, status) => cb(status));
+    },
+    onWebSocketMessage: (cb) => {
+        ipcRenderer.on('ws:message', (event, data) => cb(data));
+    }
+});
