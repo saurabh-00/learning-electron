@@ -1,5 +1,5 @@
 {
-  "name": "first-electron-app",
+  "name": "fruits-table",
   "version": "1.0.0",
   "description": "First electron app to start with electron.js",
   "main": "main.js",

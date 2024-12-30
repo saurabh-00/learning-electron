@@ -14,7 +14,8 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
             contextIsolation: true
-        }
+        },
+        icon: path.join(__dirname, 'icons/favicon.png')
     });
 
     mainWindow.loadFile('index.html');

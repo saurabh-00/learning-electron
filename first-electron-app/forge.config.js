@@ -4,24 +4,34 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: './icons/favicon'
   },
   rebuildConfig: {},
   makers: [
     {
-      name: '@electron-forge/maker-squirrel',
-      config: {},
+      name: '@electron-forge/maker-squirrel',    // Windows installer icon
+      config: {
+        name: 'FruitsTable',
+        setupIcon: './icons/favicon.ico'
+      },
     },
     {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
     },
     {
-      name: '@electron-forge/maker-deb',
-      config: {},
+      name: '@electron-forge/maker-deb',    // Linux DEB package icon
+      config: {
+        name: 'FruitsTable',
+        setupIcon: './icons/favicon.png'
+      },
     },
     {
-      name: '@electron-forge/maker-rpm',
-      config: {},
+      name: '@electron-forge/maker-rpm',    // Linux RPM package icon
+      config: {
+        name: 'FruitsTable',
+        setupIcon: './icons/favicon.png'
+      },
     },
   ],
   plugins: [
